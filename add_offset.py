@@ -37,4 +37,4 @@ if __name__ == '__main__':
             else:
                 print(e)
     else:
-        print(f'Illegal amount of arguments given. 4 excpected, {len(sys.argv)-1} given.')
+        print(f'Illegal amount of arguments given. 4 excpected, {len(sys.argv) - 1} given.')
