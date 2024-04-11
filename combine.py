@@ -58,24 +58,37 @@ def find_extremes(json_decoded):
         close = min(close, block['z'])
         far = max(far, block['z'])
 
-    print(left, right, down, up, close, far)
     return (left, right, down, up, close, far)
 
 
 def find_alignment_point(json_decoded):
-    # Only selects the x,y,z coordinate of building block with the id 219
+    # Only selects the x,y,z coordinate of building blocks with the id 219
     blocks = [
-        (json_decoded['buildingBlocks'][i]['position']['x'],
-         json_decoded['buildingBlocks'][i]['position']['y'],
-         json_decoded['buildingBlocks'][i]['position']['z']
-         ) for i in range(len(json_decoded['buildingBlocks']))
-        if json_decoded['buildingBlocks'][i]['blockID'] == 219]
-    result = Counter(blocks)
+        json_decoded['buildingBlocks'][i] for i in range(len(json_decoded['buildingBlocks'])) if
+        json_decoded['buildingBlocks'][i]['blockID'] == 219
+    ]
+    coords = [
+        (block['position']['x'],
+         block['position']['y'],
+         block['position']['z']
+         ) for block in blocks]
+    result = Counter(coords)
     keys = result.keys()
     stacks_of_three = []
     for i in keys:
         if (result[i] == 3):
             stacks_of_three.append(i)
+    x = stacks_of_three[0][0]
+    y = stacks_of_three[0][1]
+    z = stacks_of_three[0][2]
+
+    deleted = 0
+    for block in blocks:
+        if block['position']['x'] == x and block['position']['y'] == y and block['position']['z'] == z:
+            json_decoded['buildingBlocks'].remove(block)
+            deleted += 1
+        if deleted >= 3:
+            break
 
     return stacks_of_three[0]
 
@@ -84,4 +97,4 @@ if __name__ == '__main__':
     src1 = 'saveFile5.json'
     src2 = 'saveFile6.json'
     dest = 'saveFile99.json'
-    combine(src1, src2, dest, alignment="lf")
+    combine(src1, src2, dest, alignment="r")
