@@ -1,6 +1,7 @@
 import copy
 import json
 import sys
+from collections import Counter
 from add_offset import add_offset
 
 
@@ -15,8 +16,24 @@ def combine(source_1: str, source_2: str, destination=None, alignment=None, sour
 
     if (destination is None):
         destination = source_1
-    if (alignment is None):
-        data_2 = add_offset(data_2, source_2_x_offset, source_2_y_offset, source_2_z_offset)
+    if (alignment is not None):
+        extremes = find_extremes(data_2)
+        alignment_point = find_alignment_point(data_1)
+        if 'l' in alignment:
+            source_2_x_offset += alignment_point[0] - extremes[0]
+        elif 'r' in alignment:
+            source_2_x_offset += alignment_point[0] - extremes[1]
+        if 'b' in alignment:
+            source_2_y_offset += alignment_point[1] - extremes[2]
+        elif 't' in alignment:
+            source_2_y_offset += alignment_point[1] - extremes[3]
+        if 'c' in alignment:
+            source_2_z_offset += alignment_point[2] - extremes[4]
+        elif 'f' in alignment:
+            source_2_z_offset += alignment_point[2] - extremes[5]
+
+    data_2 = add_offset(data_2, source_2_x_offset, source_2_y_offset, source_2_z_offset)
+    print(f'Entire offset: (x,y,z) {source_2_x_offset} {source_2_y_offset} {source_2_z_offset}')
 
     data_1['buildingBlocks'].extend(data_2['buildingBlocks'])
 
@@ -24,8 +41,47 @@ def combine(source_1: str, source_2: str, destination=None, alignment=None, sour
         json_data.write(json.dumps(data_1))
 
 
+def find_extremes(json_decoded):
+    left = json_decoded['buildingBlocks'][0]['position']['x']
+    right = json_decoded['buildingBlocks'][0]['position']['x']
+    down = json_decoded['buildingBlocks'][0]['position']['y']
+    up = json_decoded['buildingBlocks'][0]['position']['y']
+    close = json_decoded['buildingBlocks'][0]['position']['z']
+    far = json_decoded['buildingBlocks'][0]['position']['z']
+
+    for block in json_decoded['buildingBlocks']:
+        block = block['position']
+        left = min(left, block['x'])
+        right = max(right, block['x'])
+        down = min(down, block['y'])
+        up = max(up, block['y'])
+        close = min(close, block['z'])
+        far = max(far, block['z'])
+
+    print(left, right, down, up, close, far)
+    return (left, right, down, up, close, far)
+
+
+def find_alignment_point(json_decoded):
+    # Only selects the x,y,z coordinate of building block with the id 219
+    blocks = [
+        (json_decoded['buildingBlocks'][i]['position']['x'],
+         json_decoded['buildingBlocks'][i]['position']['y'],
+         json_decoded['buildingBlocks'][i]['position']['z']
+         ) for i in range(len(json_decoded['buildingBlocks']))
+        if json_decoded['buildingBlocks'][i]['blockID'] == 219]
+    result = Counter(blocks)
+    keys = result.keys()
+    stacks_of_three = []
+    for i in keys:
+        if (result[i] == 3):
+            stacks_of_three.append(i)
+
+    return stacks_of_three[0]
+
+
 if __name__ == '__main__':
     src1 = 'saveFile5.json'
     src2 = 'saveFile6.json'
-    #dest = 'saveFile7.json'
-    combine(src1, src2,source_2_x_offset=3)
+    dest = 'saveFile99.json'
+    combine(src1, src2, dest, alignment="lf")
