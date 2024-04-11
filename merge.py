@@ -6,9 +6,9 @@ from collections import Counter
 from add_offset import add_offset
 
 
-def combine(source_1: str, source_2: str, destination: str, alignment=None, source_2_x_offset=0.0,
-            source_2_y_offset=0.0,
-            source_2_z_offset=0.0):
+def merge(source_1: str, source_2: str, destination: str, alignment=None, source_2_x_offset=0.0,
+          source_2_y_offset=0.0,
+          source_2_z_offset=0.0):
     with open(source_1, 'r') as json_data_1:
         data_1 = json.load(json_data_1)
 
@@ -102,23 +102,23 @@ if __name__ == '__main__':
             src2 = f'saveFile{sys.argv[2]}.json'
             dest = f'saveFile{sys.argv[3]}.json'
             if len(sys.argv) == 4:
-                combine(src1, src2, dest)
+                merge(src1, src2, dest)
             elif len(sys.argv) == 7:
-                combine(src1, src2, dest,
-                        source_2_x_offset=float(sys.argv[4]),
-                        source_2_y_offset=float(sys.argv[5]),
-                        source_2_z_offset=float(sys.argv[6])
-                        )
+                merge(src1, src2, dest,
+                      source_2_x_offset=float(sys.argv[4]),
+                      source_2_y_offset=float(sys.argv[5]),
+                      source_2_z_offset=float(sys.argv[6])
+                      )
             else:
                 if (re.match("^(l|r)?(b|t)?(c|f)?$", sys.argv[4])):
                     if len(sys.argv) == 5:
-                        combine(src1, src2, dest, sys.argv[4])
+                        merge(src1, src2, dest, sys.argv[4])
                     elif len(sys.argv) == 8:
-                        combine(src1, src2, dest, sys.argv[4],
-                                source_2_x_offset=float(sys.argv[5]),
-                                source_2_y_offset=float(sys.argv[6]),
-                                source_2_z_offset=float(sys.argv[7])
-                                )
+                        merge(src1, src2, dest, sys.argv[4],
+                              source_2_x_offset=float(sys.argv[5]),
+                              source_2_y_offset=float(sys.argv[6]),
+                              source_2_z_offset=float(sys.argv[7])
+                              )
                 else:
                     print("Illegal alignment string")
         except  Exception as e:
