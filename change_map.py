@@ -28,7 +28,6 @@ if __name__ == '__main__':
                 print(e.message)
             else:
                 print(e)
-
-
     else:
-        print(f"Illegal arguments given. First argument is the number of the save file. For the second argument only {maps} is accepted.")
+        print(
+            f"Illegal arguments given. First argument is the number of the save file. For the second argument only {maps} is accepted.")
