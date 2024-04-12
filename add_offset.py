@@ -27,13 +27,13 @@ def add_offset_json(filepath, x_offset, y_offset, z_offset):
 
 
 if __name__ == '__main__':
-    if (len(sys.argv) == 5):
+    if len(sys.argv) == 5:
         try:
             add_offset_json(f"saveFile{sys.argv[1]}.json", float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]))
-        except  Exception as e:
+        except Exception as e:
             if hasattr(e, 'message'):
                 print(e.message)
             else:
                 print(e)
     else:
-        print(f'Illegal amount of arguments given. 4 excpected, {len(sys.argv) - 1} given.')
+        print(f'Illegal amount of arguments given. 4 expected, {len(sys.argv) - 1} given.')

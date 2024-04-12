@@ -15,7 +15,7 @@ def merge(source_1: str, source_2: str, destination: str, alignment=None, source
     with open(source_2, 'r') as json_data_2:
         data_2 = json.load(json_data_2)
 
-    if (alignment is not None):
+    if alignment is not None:
         extremes = find_extremes(data_2)
         alignment_point = find_alignment_point(data_1)
         if 'l' in alignment:
@@ -57,25 +57,28 @@ def find_extremes(json_decoded):
         close = min(close, block['z'])
         far = max(far, block['z'])
 
-    return (left, right, down, up, close, far)
+    return left, right, down, up, close, far
 
 
 def find_alignment_point(json_decoded):
     # Only selects building blocks with the id 219
     blocks = [
-        json_decoded['buildingBlocks'][i] for i in range(len(json_decoded['buildingBlocks'])) if
-        json_decoded['buildingBlocks'][i]['blockID'] == 219
+        json_decoded['buildingBlocks'][i] for i in range(len(json_decoded['buildingBlocks']))
+        if json_decoded['buildingBlocks'][i]['blockID'] == 219
     ]
     coords = [
-        (block['position']['x'],
-         block['position']['y'],
-         block['position']['z']
-         ) for block in blocks]
+        (
+            block['position']['x'],
+            block['position']['y'],
+            block['position']['z']
+        ) for block in blocks
+    ]
+
     result = Counter(coords)
     keys = result.keys()
     stacks_of_three = []
     for i in keys:
-        if (result[i] == 3):
+        if result[i] == 3:
             stacks_of_three.append(i)
 
     x = stacks_of_three[0][0]
@@ -96,7 +99,7 @@ def find_alignment_point(json_decoded):
 
 if __name__ == '__main__':
     arg_amount = [4, 5, 7, 8]
-    if (len(sys.argv) in arg_amount):
+    if len(sys.argv) in arg_amount:
         try:
             src1 = f'saveFile{sys.argv[1]}.json'
             src2 = f'saveFile{sys.argv[2]}.json'
@@ -110,7 +113,7 @@ if __name__ == '__main__':
                       source_2_z_offset=float(sys.argv[6])
                       )
             else:
-                if (re.match("^(l|r)?(b|t)?(c|f)?$", sys.argv[4])):
+                if re.match("^([lr])?([bt])?([cf])?$", sys.argv[4]):
                     if len(sys.argv) == 5:
                         merge(src1, src2, dest, sys.argv[4])
                     elif len(sys.argv) == 8:
@@ -121,7 +124,7 @@ if __name__ == '__main__':
                               )
                 else:
                     print("Illegal alignment string")
-        except  Exception as e:
+        except Exception as e:
             if hasattr(e, 'message'):
                 print(e.message)
             else:
