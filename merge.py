@@ -61,7 +61,7 @@ def find_extremes(json_decoded):
 
 
 def find_alignment_point(json_decoded):
-    # Only selects building blocks with the id 219
+    # Only selects building blocks with the specific id
     blocks = [
         json_decoded['buildingBlocks'][i] for i in range(len(json_decoded['buildingBlocks']))
         if json_decoded['buildingBlocks'][i]['blockID'] == 219
