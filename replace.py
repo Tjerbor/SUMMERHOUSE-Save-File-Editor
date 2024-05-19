@@ -44,5 +44,4 @@ if __name__ == '__main__':
             else:
                 print(e)
     else:
-        print("Illegal amount of arguments given. Save file number and at least 1 blockID,replaceID pair must be "
-              "specified.")
+        print("Illegal amount of arguments given. Save file number and at least 1 blockID,replaceID pair must be specified.")
